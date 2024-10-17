@@ -32,12 +32,13 @@ public class managementHotelFelis {
         boolean pembayaranSelesai;
         MetodePembayaran metodePembayaran;
 
-        Reservasi(int idReservasi, String namaTamu, Kamar kamar) {
+        Reservasi(int idReservasi, String namaTamu, Kamar kamar, MetodePembayaran metodePembayaran) {
             this.idReservasi = idReservasi;
             this.namaTamu = namaTamu;
             this.kamar = kamar;
             this.checkedIn = false;
             this.pembayaranSelesai = false;
+            this.metodePembayaran = metodePembayaran;
         }
     }
 
@@ -89,18 +90,43 @@ public class managementHotelFelis {
                 System.out.println("ID Kamar: " + kamar.id + ", Tipe: " + kamar.tipeKamar + ", Harga: " + kamar.harga);
             }
         }
-        System.out.println("\nTekan Enter untuk melanjutkan...");
-        new Scanner(System.in).nextLine();  // Menunggu pengguna menekan Enter
     }
 
-    // Pemesanan kamar
+    // Pemesanan kamar dengan metode pembayaran
     public static void bookingKamar(String namaTamu, int idKamar) {
+        Scanner scanner = new Scanner(System.in);
+
         for (Kamar kamar : kamarList) {
             if (kamar.id == idKamar && !kamar.dipesan) {
+                // Memilih metode pembayaran
+                System.out.println("Pilih metode pembayaran: ");
+                System.out.println("1. Transfer Bank");
+                System.out.println("2. Kartu Kredit");
+                System.out.println("3. E-Wallet");
+                int pilihanPembayaran = scanner.nextInt();
+
+                MetodePembayaran metodePembayaran;
+                switch (pilihanPembayaran) {
+                    case 1:
+                        metodePembayaran = MetodePembayaran.TRANSFER_BANK;
+                        break;
+                    case 2:
+                        metodePembayaran = MetodePembayaran.KARTU_KREDIT;
+                        break;
+                    case 3:
+                        metodePembayaran = MetodePembayaran.E_WALLET;
+                        break;
+                    default:
+                        System.out.println("Pilihan tidak valid. Menggunakan Transfer Bank sebagai default.");
+                        metodePembayaran = MetodePembayaran.TRANSFER_BANK;
+                        break;
+                }
+
                 kamar.dipesan = true;
-                Reservasi reservasi = new Reservasi(nextReservasiId++, namaTamu, kamar);
+                Reservasi reservasi = new Reservasi(nextReservasiId++, namaTamu, kamar, metodePembayaran);
                 reservasiList.add(reservasi);
                 System.out.println("Kamar berhasil dipesan untuk " + namaTamu + " (ID Reservasi: " + reservasi.idReservasi + ")");
+                System.out.println("Metode Pembayaran: " + metodePembayaran);
                 System.out.println("\nTekan Enter untuk melanjutkan...");
                 new Scanner(System.in).nextLine();  // Menunggu pengguna menekan Enter
                 return;
