@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ManajemenHotel {
+
     // Enum untuk metode pembayaran
     enum MetodePembayaran {
         TRANSFER_BANK, KARTU_KREDIT, E_WALLET
@@ -48,21 +49,14 @@ public class ManajemenHotel {
     static int nextKamarId = 1;
     static int nextReservasiId = 1;
 
-    // Fungsi clear screen
-    public static void clearScreen() {
-        for (int i = 0; i < 50; i++) {
-            System.out.println();
-        }
-    }
-
-    // Tambah kamar baru
+    // Fungsi untuk menambahkan kamar
     public static void tambahKamar(String tipeKamar, double harga) {
         Kamar kamar = new Kamar(nextKamarId++, tipeKamar, harga);
         kamarList.add(kamar);
         System.out.println("Kamar ditambahkan: " + tipeKamar + " (ID: " + kamar.id + ")");
     }
 
-    // Hapus kamar berdasarkan ID
+    // Fungsi untuk menghapus kamar
     public static void hapusKamar(int idKamar) {
         for (Kamar kamar : kamarList) {
             if (kamar.id == idKamar) {
@@ -72,17 +66,13 @@ public class ManajemenHotel {
                 } else {
                     System.out.println("Kamar tidak dapat dihapus karena sedang dipesan.");
                 }
-                System.out.println("\nTekan Enter untuk melanjutkan...");
-                new Scanner(System.in).nextLine();  // Menunggu pengguna menekan Enter
                 return;
             }
         }
         System.out.println("ID kamar tidak ditemukan.");
-        System.out.println("\nTekan Enter untuk melanjutkan...");
-        new Scanner(System.in).nextLine();  // Menunggu pengguna menekan Enter
     }
 
-    // Tampilkan kamar yang tersedia
+    // Fungsi untuk menampilkan kamar yang tersedia
     public static void tampilkanKamarTersedia() {
         System.out.println("\nKamar Tersedia:");
         for (Kamar kamar : kamarList) {
@@ -92,7 +82,7 @@ public class ManajemenHotel {
         }
     }
 
-    // Pemesanan kamar dengan metode pembayaran
+    // Fungsi untuk memesan kamar dengan metode pembayaran
     public static void bookingKamar(String namaTamu, int idKamar) {
         Scanner scanner = new Scanner(System.in);
 
@@ -125,15 +115,72 @@ public class ManajemenHotel {
                 kamar.dipesan = true;
                 Reservasi reservasi = new Reservasi(nextReservasiId++, namaTamu, kamar, metodePembayaran);
                 reservasiList.add(reservasi);
+
                 System.out.println("Kamar berhasil dipesan untuk " + namaTamu + " (ID Reservasi: " + reservasi.idReservasi + ")");
                 System.out.println("Metode Pembayaran: " + metodePembayaran);
-                System.out.println("\nTekan Enter untuk melanjutkan...");
-                new Scanner(System.in).nextLine();  // Menunggu pengguna menekan Enter
                 return;
             }
         }
         System.out.println("Kamar tidak tersedia atau tidak ada.");
-        System.out.println("\nTekan Enter untuk melanjutkan...");
-        new Scanner(System.in).nextLine();  // Menunggu pengguna menekan Enter
+    }
+
+    // Fungsi untuk menampilkan semua reservasi
+    public static void tampilkanReservasi() {
+        System.out.println("\nDaftar Reservasi:");
+        for (Reservasi reservasi : reservasiList) {
+            System.out.println("ID Reservasi: " + reservasi.idReservasi + ", Nama Tamu: " + reservasi.namaTamu +
+                    ", ID Kamar: " + reservasi.kamar.id + ", Metode Pembayaran: " + reservasi.metodePembayaran);
+        }
+    }
+
+    // Fungsi utama untuk menjalankan sistem
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
+
+        while (!exit) {
+            System.out.println("\n=== Manajemen Hotel ===");
+            System.out.println("1. Tambah Kamar");
+            System.out.println("2. Hapus Kamar");
+            System.out.println("3. Tampilkan Kamar Tersedia");
+            System.out.println("4. Booking Kamar");
+            System.out.println("5. Tampilkan Reservasi");
+            System.out.println("6. Keluar");
+            System.out.print("Pilih opsi: ");
+            int opsi = scanner.nextInt();
+
+            switch (opsi) {
+                case 1:
+                    System.out.print("Masukkan tipe kamar: ");
+                    String tipeKamar = scanner.next();
+                    System.out.print("Masukkan harga kamar: ");
+                    double harga = scanner.nextDouble();
+                    tambahKamar(tipeKamar, harga);
+                    break;
+                case 2:
+                    System.out.print("Masukkan ID kamar yang akan dihapus: ");
+                    int idKamar = scanner.nextInt();
+                    hapusKamar(idKamar);
+                    break;
+                case 3:
+                    tampilkanKamarTersedia();
+                    break;
+                case 4:
+                    System.out.print("Masukkan nama tamu: ");
+                    String namaTamu = scanner.next();
+                    System.out.print("Masukkan ID kamar yang ingin dipesan: ");
+                    int idKamarPesan = scanner.nextInt();
+                    bookingKamar(namaTamu, idKamarPesan);
+                    break;
+                case 5:
+                    tampilkanReservasi();
+                    break;
+                case 6:
+                    exit = true;
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        }
     }
 }
